@@ -11,6 +11,12 @@ namespace CrossStitch
         public myPanel()
         {
             this.DoubleBuffered = true;
+            this.ResizeRedraw = true;
+        }
+
+        protected override void OnPaintBackground(System.Windows.Forms.PaintEventArgs e)
+        {
+            base.OnPaintBackground(e);
         }
     }
 }

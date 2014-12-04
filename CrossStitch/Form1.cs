@@ -11,12 +11,17 @@ using System.Windows.Forms;
 
 namespace CrossStitch
 {
+    public enum Units { Pixels, Cells }
+
     public partial class Form1 : Form
     {
         Random random;
 
         int panelWidth;
         int panelHeight;
+
+        int stitchCellCountWidth;
+        int stitchCellCountHeight;
 
         int cellWidth;
 
@@ -26,6 +31,8 @@ namespace CrossStitch
 
         bool mouseDown;
 
+        bool DrawGrid;
+
         public Form1()
         {
             InitializeComponent();
@@ -33,36 +40,87 @@ namespace CrossStitch
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.DoubleBuffered = true;
-            random = new Random();
-            panelWidth = panelMain.Width;
-            panelHeight = panelMain.Height;
+            GenerateNewStitch(20, 20, Units.Cells);
+            DrawGrid = checkBoxDrawGrid.Checked;
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using(NewFile nF = new NewFile())
+            {
+                if(nF.ShowDialog() == DialogResult.OK)
+                {
+                    GenerateNewStitch(nF.width, nF.height, nF.units);
+                }
+            }
+        }
+
+        private void GenerateNewStitch(int width, int height, Units units)
+        {
             cellWidth = 10;
             selectedColor = Color.White;
 
-            stitch = new Stitch(80, 80);
+            if (units == Units.Pixels)
+            {
+                stitchCellCountWidth = width / 10;
+                stitchCellCountHeight = height / 10;
+            }
+            else
+            {
+                stitchCellCountWidth = width;
+                stitchCellCountHeight = height;
+            }
+
+            ResizePanel(stitchCellCountWidth * 10, stitchCellCountHeight * 10);
+
+            stitch = new Stitch(stitchCellCountWidth, stitchCellCountHeight);
         }
 
-        private void toolStripButtonNew_Click(object sender, EventArgs e)
+        private void ResizePanel(int width, int height)
         {
-
+            myPanel.Width = width;
+            myPanel.Height = height;
+            panelWidth = myPanel.Width;
+            panelHeight = myPanel.Height;
         }
+
 
         private void PaintCell(Point coordinates)
         {
             int x = coordinates.X / 10;
             int y = coordinates.Y / 10;
 
-            //Console.WriteLine(x + "," + y);
-            if (stitch.stitchCells[x, y] != selectedColor)
+            if (x < stitch.stitchCells.GetLength(0) && x >= 0 && y >= 0 && y < stitch.stitchCells.GetLength(1))
             {
-                Console.WriteLine("REDRAW");
-                stitch.stitchCells[x, y] = selectedColor;
-                panelMain.Invalidate(); // call this to redraw
+                if (stitch.stitchCells[x, y] != selectedColor)
+                {
+                    stitch.stitchCells[x, y] = selectedColor;
+                    myPanel.Invalidate(); // call this to redraw
+                }
             }
         }
 
-        private void panelMain_MouseMove(object sender, MouseEventArgs e)
+        private void myPanel_Paint(object sender, PaintEventArgs e)
+        {
+            if (DesignMode) return;
+            Render(e.Graphics);
+        }
+
+        private void myPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            //Console.WriteLine("Mouse down");
+            mouseDown = true;
+            MouseEventArgs me = (MouseEventArgs)e;
+            Point coordinates = me.Location;
+            PaintCell(coordinates);
+        }
+
+        private void myPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDown = false;
+        }
+
+        private void myPanel_MouseMove(object sender, MouseEventArgs e)
         {
             if (mouseDown)
             {
@@ -72,71 +130,61 @@ namespace CrossStitch
             }
         }
 
-        private void panelMain_MouseDown(object sender, MouseEventArgs e)
-        {
-            //Console.WriteLine("Mouse down");
-            mouseDown = true; 
-            MouseEventArgs me = (MouseEventArgs)e;
-            Point coordinates = me.Location;
-            PaintCell(coordinates);
-        }
-
-        private void panelMain_MouseUp(object sender, MouseEventArgs e)
+        private void myPanel_MouseLeave(object sender, EventArgs e)
         {
             mouseDown = false;
-        }
-
-        private void panelMain_MouseLeave(object sender, EventArgs e)
-        {
-            mouseDown = false;
-        }
-
-        private void panelMain_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panelMain_Paint(object sender, PaintEventArgs e)
-        {
-            Render(e.Graphics);
         }
 
         private void Render(System.Drawing.Graphics g)
         {
+            if (DesignMode) return;
+
             var darkGrey = new Pen(Color.FromArgb(255, Color.Black),1);
             var grey = new Pen(Color.FromArgb(85, Color.Black),1);
 
-            using (g)
+            for (int sX = 0; sX < stitchCellCountWidth; sX++)
             {
-                for (int sX = 0; sX < stitch.Width; sX++)
+                for (int sY = 0; sY < stitchCellCountHeight; sY++)
                 {
-                    for (int sY = 0; sY < stitch.Width; sY++)
-                    {
-                        g.FillRectangle(new SolidBrush(stitch.stitchCells[sX, sY]), (sX * cellWidth) + 1, (sY * cellWidth) + 1, 9, 9);
-                    }
+                    g.FillRectangle(new SolidBrush(stitch.stitchCells[sX, sY]), (sX * cellWidth) + 1, (sY * cellWidth) + 1, 9, 9);
                 }
+            }
 
-                //g.FillRectangle(new SolidBrush(Color.Blue), 31, 21, 9, 9);
-
-                for (int i = 0; i < 100; i++)
+            if (DrawGrid)
+            {
+                // VERTICAL LINES //
+                for (int i = 0; i < stitchCellCountWidth; i++)
                 {
-                    //g.DrawRectangle(grey, new Rectangle(25, 25, 20, 20));
                     if (i % 10 != 0)
                     {
-                        g.DrawLine(grey, i * cellWidth, 0, // main lines vertical
+                        g.DrawLine(grey, i * cellWidth, 0, // main lines
                             i * cellWidth, 800);
-                        g.DrawLine(grey, 0, i * cellWidth, // main lines horizontal
-                            800, i * cellWidth); 
                     }
                     else
                     {
-                        g.DrawLine(darkGrey, i * cellWidth, 0, // interval lines vertical
+                        g.DrawLine(darkGrey, i * cellWidth, 0, // interval lines
                             i * cellWidth, 800);
-                        g.DrawLine(darkGrey, 0, i * cellWidth, // interval lines horizontal
-                            800, i * cellWidth); 
+                    }
+                }
+
+                // HORIZONTAL LINES //
+                for (int i = 0; i < stitchCellCountHeight; i++)
+                {
+                    if (i % 10 != 0)
+                    {
+                        g.DrawLine(grey, 0, i * cellWidth, // main lines
+                            800, i * cellWidth);
+                    }
+                    else
+                    {
+                        g.DrawLine(darkGrey, 0, i * cellWidth, // interval lines
+                            800, i * cellWidth);
                     }
                 }
             }
+
+            g.DrawLine(darkGrey, panelWidth - 1, 0, panelWidth - 1, panelHeight - 1);
+            g.DrawLine(darkGrey, 0, panelHeight - 1, panelWidth, panelHeight - 1);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -177,6 +225,9 @@ namespace CrossStitch
             selectedColor = panelColour4.BackColor;
         }
 
-
+        private void checkBoxDrawGrid_CheckedChanged(object sender, EventArgs e)
+        {
+            DrawGrid = !DrawGrid;
+        }
     }
 }
