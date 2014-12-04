@@ -49,6 +49,10 @@
             this.panelMain.TabIndex = 2;
             this.panelMain.Click += new System.EventHandler(this.panelMain_Click);
             this.panelMain.Paint += new System.Windows.Forms.PaintEventHandler(this.panelMain_Paint);
+            this.panelMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelMain_MouseDown);
+            this.panelMain.MouseLeave += new System.EventHandler(this.panelMain_MouseLeave);
+            this.panelMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panelMain_MouseMove);
+            this.panelMain.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelMain_MouseUp);
             // 
             // toolStrip1
             // 

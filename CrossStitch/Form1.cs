@@ -24,6 +24,8 @@ namespace CrossStitch
 
         Color selectedColor;
 
+        bool mouseDown;
+
         public Form1()
         {
             InitializeComponent();
@@ -46,18 +48,52 @@ namespace CrossStitch
 
         }
 
-        private void panelMain_Click(object sender, EventArgs e)
+        private void PaintCell(Point coordinates)
         {
-            MouseEventArgs me = (MouseEventArgs)e;
-            Point coordinates = me.Location;
-            
             int x = coordinates.X / 10;
             int y = coordinates.Y / 10;
 
-            Console.WriteLine(x + "," + y);
-            stitch.stitchCells[x,y] = selectedColor;
+            //Console.WriteLine(x + "," + y);
+            if (stitch.stitchCells[x, y] != selectedColor)
+            {
+                Console.WriteLine("REDRAW");
+                stitch.stitchCells[x, y] = selectedColor;
+                panelMain.Invalidate(); // call this to redraw
+            }
+        }
 
-            panelMain.Invalidate(); // call this to redraw
+        private void panelMain_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mouseDown)
+            {
+                MouseEventArgs me = (MouseEventArgs)e;
+                Point coordinates = me.Location;
+                PaintCell(coordinates);
+            }
+        }
+
+        private void panelMain_MouseDown(object sender, MouseEventArgs e)
+        {
+            //Console.WriteLine("Mouse down");
+            mouseDown = true; 
+            MouseEventArgs me = (MouseEventArgs)e;
+            Point coordinates = me.Location;
+            PaintCell(coordinates);
+        }
+
+        private void panelMain_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDown = false;
+        }
+
+        private void panelMain_MouseLeave(object sender, EventArgs e)
+        {
+            mouseDown = false;
+        }
+
+        private void panelMain_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void panelMain_Paint(object sender, PaintEventArgs e)
@@ -140,5 +176,7 @@ namespace CrossStitch
         {
             selectedColor = panelColour4.BackColor;
         }
+
+
     }
 }
