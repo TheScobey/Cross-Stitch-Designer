@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace CrossStitch
 {
@@ -74,6 +76,19 @@ namespace CrossStitch
             //stitch.PointList.Add(new PointPair(0, 0, 200, 200));
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SerializeStitch();
+        }
+
+        private void SerializeStitch()
+        {
+            string path = @"C:\Users\Will\Desktop\text.XML";
+            FileStream outFile = File.Create(path);
+            XmlSerializer formatter = new XmlSerializer(stitch.stitchCells.GetType());
+            formatter.Serialize(outFile, stitch.stitchCells);
+        }
+
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveFileDialog1.ShowDialog();
@@ -129,16 +144,10 @@ namespace CrossStitch
             cellWidth = density;
             selectedColor = Color.White;
 
-            if (units == Units.Pixels)
-            {
-                stitchCellCountWidth = width / cellWidth;
-                stitchCellCountHeight = height / cellWidth;
-            }
-            else
-            {
-                stitchCellCountWidth = width;
-                stitchCellCountHeight = height;
-            }
+            stitchCellCountWidth = width;
+            stitchCellCountHeight = height;
+
+            Console.WriteLine(stitchCellCountWidth);
 
             ResizePanel(stitchCellCountWidth * cellWidth, stitchCellCountHeight * cellWidth);
 
@@ -377,5 +386,7 @@ namespace CrossStitch
         {
             selectedColor = panelColour10.BackColor;
         }
+
+
     }
 }

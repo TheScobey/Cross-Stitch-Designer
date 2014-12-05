@@ -51,6 +51,7 @@
             this.panelColour9 = new System.Windows.Forms.Panel();
             this.buttonCopyColour = new System.Windows.Forms.Button();
             this.myPanel = new CrossStitch.myPanel();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -269,11 +270,22 @@
             this.myPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.myPanel_MouseMove);
             this.myPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.myPanel_MouseUp);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(811, 312);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(898, 847);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonCopyColour);
             this.Controls.Add(this.panelColour10);
             this.Controls.Add(this.panelColour9);
@@ -324,6 +336,7 @@
         private System.Windows.Forms.Panel panelColour10;
         private System.Windows.Forms.Panel panelColour9;
         private System.Windows.Forms.Button buttonCopyColour;
+        private System.Windows.Forms.Button button1;
     }
 }
 

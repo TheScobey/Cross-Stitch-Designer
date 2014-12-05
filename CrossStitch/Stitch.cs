@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace CrossStitch
 {
-    class Stitch
+    public class Stitch
     {
         public Color[,] stitchCells;
         public string FileName;
@@ -30,6 +30,11 @@ namespace CrossStitch
 
         private int width;
         private int height;
+
+        public Stitch()
+        {
+
+        }
 
         public Stitch(int width, int height)
         {
