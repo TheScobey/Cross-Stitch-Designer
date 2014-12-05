@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-//using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace CrossStitch
 {
@@ -15,7 +15,7 @@ namespace CrossStitch
 
     public partial class Form1 : Form
     {
-        Random random;
+        Bitmap bmp;
 
         int panelWidth;
         int panelHeight;
@@ -27,7 +27,12 @@ namespace CrossStitch
 
         Stitch stitch;
 
+        List<Panel> ColourPanels;
+        List<Color> QuickColourList;
         Color selectedColor;
+        Color drawColor;
+        bool copyingColourMode;
+
 
         bool mouseDown;
 
@@ -40,8 +45,69 @@ namespace CrossStitch
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            GenerateNewStitch(20, 20, Units.Cells);
+            GenerateNewStitch(80, 80, Units.Cells);
             DrawGrid = checkBoxDrawGrid.Checked;
+
+            ColourPanels = new List<Panel> { panelColour1,
+                panelColour2,
+                panelColour3,
+                panelColour4,
+                panelColour5,
+                panelColour6,
+                panelColour7,
+                panelColour8,
+                panelColour9,
+                panelColour10 };
+
+            QuickColourList = new List<Color> { Color.White, 
+                Color.Red, 
+                Color.Blue, 
+                Color.Teal, 
+                Color.Purple, 
+                Color.Yellow, 
+                Color.Orange, 
+                Color.Green, 
+                Color.Pink, 
+                Color.Green, 
+                Color.Brown };
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.ShowDialog();
+        }
+
+        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        {
+            string fileName = saveFileDialog1.FileName;
+            stitch.FileName = fileName;
+
+            SaveFile(fileName);
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFile(stitch.FileName);
+        }
+
+        private void SaveFile(string FileName)
+        {
+            try
+            {
+                bmp = new Bitmap(panelWidth, panelHeight);
+
+                using (Graphics bmpG = Graphics.FromImage(bmp))
+                {
+                    Render(bmpG);
+                }
+
+                bmp.Save(FileName, ImageFormat.Png);
+            }
+            catch(ArgumentNullException)
+            {
+                saveFileDialog1.ShowDialog();
+                //MessageBox.Show("Invalid file path to save to.");
+            }
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -84,7 +150,18 @@ namespace CrossStitch
             panelHeight = myPanel.Height;
         }
 
+        private void AddColourToPanel(Color colorToAdd)
+        {
+            //QuickColourList.Last() = colorToAdd;
 
+            QuickColourList.Insert(0, colorToAdd);
+            QuickColourList.RemoveAt(10);
+            
+            for(int i = 0; i < ColourPanels.Count; i++)
+            {
+                ColourPanels[i].BackColor = QuickColourList[i];
+            }
+        }
         private void PaintCell(Point coordinates)
         {
             int x = coordinates.X / 10;
@@ -92,9 +169,9 @@ namespace CrossStitch
 
             if (x < stitch.stitchCells.GetLength(0) && x >= 0 && y >= 0 && y < stitch.stitchCells.GetLength(1))
             {
-                if (stitch.stitchCells[x, y] != selectedColor)
+                if (stitch.stitchCells[x, y] != drawColor && copyingColourMode == false)
                 {
-                    stitch.stitchCells[x, y] = selectedColor;
+                    stitch.stitchCells[x, y] = drawColor;
                     myPanel.Invalidate(); // call this to redraw
                 }
             }
@@ -108,11 +185,30 @@ namespace CrossStitch
 
         private void myPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            //Console.WriteLine("Mouse down");
             mouseDown = true;
+
             MouseEventArgs me = (MouseEventArgs)e;
             Point coordinates = me.Location;
-            PaintCell(coordinates);
+
+            if(copyingColourMode == false)
+            {
+                if(me.Button == MouseButtons.Left)
+                {
+                    drawColor = selectedColor;
+                }
+                else
+                {
+                    drawColor = Color.White;
+                }
+                PaintCell(coordinates);
+            }
+            else
+            {
+                selectedColor = stitch.stitchCells[me.X / 10, me.Y / 10];
+                AddColourToPanel(selectedColor);
+                copyingColourMode = false;
+                this.Cursor = Cursors.Default;
+            }
         }
 
         private void myPanel_MouseUp(object sender, MouseEventArgs e)
@@ -187,7 +283,7 @@ namespace CrossStitch
             g.DrawLine(darkGrey, 0, panelHeight - 1, panelWidth, panelHeight - 1);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonNewColour_Click(object sender, EventArgs e)
         {
             ColorDialog colorDialog = new ColorDialog();
 
@@ -199,10 +295,24 @@ namespace CrossStitch
             colorDialog.Color = Color.Blue;
 
             if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
                 selectedColor = colorDialog.Color;
+                panelColour1.BackColor = selectedColor;
+                AddColourToPanel(colorDialog.Color);
+            }
+        }
 
-            panelColour1.BackColor = selectedColor;
+        private void buttonCopyColour_Click(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.Hand;
+            copyingColourMode = true;
+            //Application.DoEvents();
+        }
 
+        private void checkBoxDrawGrid_CheckedChanged(object sender, EventArgs e)
+        {
+            DrawGrid = !DrawGrid;
+            myPanel.Invalidate();
         }
 
         private void panelColour1_Click(object sender, EventArgs e)
@@ -225,9 +335,35 @@ namespace CrossStitch
             selectedColor = panelColour4.BackColor;
         }
 
-        private void checkBoxDrawGrid_CheckedChanged(object sender, EventArgs e)
+        private void panelColour5_Click(object sender, EventArgs e)
         {
-            DrawGrid = !DrawGrid;
+            selectedColor = panelColour5.BackColor;
         }
+
+        private void panelColour6_Click(object sender, EventArgs e)
+        {
+            selectedColor = panelColour6.BackColor;
+        }
+
+        private void panelColour7_Click(object sender, EventArgs e)
+        {
+            selectedColor = panelColour7.BackColor;
+        }
+
+        private void panelColour8_Click(object sender, EventArgs e)
+        {
+            selectedColor = panelColour8.BackColor;
+        }
+
+        private void panelColour9_Click(object sender, EventArgs e)
+        {
+            selectedColor = panelColour9.BackColor;
+        }
+
+        private void panelColour10_Click(object sender, EventArgs e)
+        {
+            selectedColor = panelColour10.BackColor;
+        }
+
     }
 }

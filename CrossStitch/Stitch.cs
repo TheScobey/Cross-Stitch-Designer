@@ -10,6 +10,7 @@ namespace CrossStitch
     class Stitch
     {
         public Color[,] stitchCells;
+        public string FileName;
 
         public int Width
         {

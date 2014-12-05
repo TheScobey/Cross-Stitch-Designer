@@ -67,6 +67,8 @@ namespace CrossStitch
                 numericHeight.Minimum = 100;
                 numericWidth.Maximum = 800;
                 numericHeight.Maximum = 800;
+                numericWidth.Value = 800;
+                numericHeight.Value = 800;
             }
             else
             {
@@ -74,6 +76,8 @@ namespace CrossStitch
                 numericHeight.Minimum = 10;
                 numericWidth.Maximum = 80;
                 numericHeight.Maximum = 80;
+                numericWidth.Value = 80;
+                numericHeight.Value = 80;
             }
         }
 
