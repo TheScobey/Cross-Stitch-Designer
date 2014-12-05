@@ -172,7 +172,7 @@
             this.checkBoxDrawGrid.AutoSize = true;
             this.checkBoxDrawGrid.Checked = true;
             this.checkBoxDrawGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxDrawGrid.Location = new System.Drawing.Point(818, 322);
+            this.checkBoxDrawGrid.Location = new System.Drawing.Point(94, 5);
             this.checkBoxDrawGrid.Name = "checkBoxDrawGrid";
             this.checkBoxDrawGrid.Size = new System.Drawing.Size(71, 17);
             this.checkBoxDrawGrid.TabIndex = 11;
