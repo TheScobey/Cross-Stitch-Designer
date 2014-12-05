@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Xml.Serialization;
+using System.Globalization;
 
 namespace CrossStitch
 {
@@ -83,10 +84,71 @@ namespace CrossStitch
 
         private void SerializeStitch()
         {
-            string path = @"C:\Users\Will\Desktop\text.XML";
-            FileStream outFile = File.Create(path);
-            XmlSerializer formatter = new XmlSerializer(stitch.stitchCells.GetType());
-            formatter.Serialize(outFile, stitch.stitchCells);
+            ColorConverter c = new ColorConverter();
+
+            string path = @"C:\Users\Will\Desktop\test.txt";
+            byte[] test = new byte[stitch.Width * stitch.Height * 3];
+            int count = 0;
+
+            for (int x = 0; x < stitch.Width; x++)
+            {
+                for (int y = 0; y < stitch.Height; y++)
+                {
+                    test[count] = stitch.stitchCells[x, y].R;
+                    count++;
+                    test[count] = stitch.stitchCells[x, y].G;
+                    count++;
+                    test[count] = stitch.stitchCells[x, y].B;
+                    count++;
+                }
+            }
+
+            using (FileStream fs = File.Create(path))
+            {
+                for (int i = 0; i < test.Length; i++)
+                {
+                    fs.WriteByte(test[i]);
+                }
+                //fs.Seek(0, SeekOrigin.Begin);
+
+                //Console.WriteLine(fs.ReadByte());
+            }
+
+            byte[] readBytes = new byte[stitch.Width * stitch.Height * 3];
+
+            using(FileStream fs = File.OpenRead(path))
+            {
+
+                while(fs.Read(readBytes,0,readBytes.Length) > 0 )
+                {
+                    //stitch.stitchCells[0, 0] = Color.FromArgb(255, readBytes[0], readBytes[1], readBytes[2]);
+                }
+                
+            }
+
+            // testing zone
+            for (int x = 0; x < stitch.Width; x++)
+            {
+                for (int y = 0; y < stitch.Height; y++)
+                {
+                    stitch.stitchCells[x, y] = Color.FromArgb(255,255,255,255);
+                }
+            }
+
+            myPanel.Invalidate();
+
+            //System.Threading.Thread.Sleep(5000);
+            // mudda fucka
+
+            count = 0;
+            for (int x = 0; x < stitch.Width; x++)
+            {
+                for (int y = 0; y < stitch.Height; y++)
+                {
+                    stitch.stitchCells[x, y] = Color.FromArgb(255, readBytes[count], readBytes[count + 1], readBytes[count + 2]);
+                    count += 3;
+                }
+            }
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
