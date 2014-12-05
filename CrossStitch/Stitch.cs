@@ -12,34 +12,21 @@ namespace CrossStitch
         public Color[,] stitchCells;
         public string FileName;
 
-        public int Width
-        {
-            get
-            {
-                return width;
-            }
-        }
+        public int CellWidth { get; set; }
+        public int Width { get; set; }
 
-        public int Height
-        {
-            get
-            {
-                return height;
-            }
-        }
-
-        private int width;
-        private int height;
+        public int Height { get; set; }
 
         public Stitch()
         {
 
         }
 
-        public Stitch(int width, int height)
+        public Stitch(int width, int height, int cellWidth)
         {
-            this.width = width;
-            this.height = height;
+            this.Width = width;
+            this.Height = height;
+            this.CellWidth = cellWidth;
 
             stitchCells = new Color[width, height];
 

@@ -23,11 +23,6 @@ namespace CrossStitch
         int panelWidth;
         int panelHeight;
 
-        int stitchCellCountWidth;
-        int stitchCellCountHeight;
-
-        int cellWidth;
-
         Stitch stitch;
 
         List<Panel> ColourPanels;
@@ -49,6 +44,7 @@ namespace CrossStitch
         private void Form1_Load(object sender, EventArgs e)
         {
             GenerateNewStitch(80, 80, Units.Cells, 10);
+
             drawGrid = checkBoxDrawGrid.Checked;
 
             ColourPanels = new List<Panel> { panelColour1,
@@ -79,74 +75,93 @@ namespace CrossStitch
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SerializeStitch();
+            SaveStitch(@"C:\Users\Will\Desktop\test.txt", stitch);
         }
 
-        private void SerializeStitch()
+        private void button2_Click(object sender, EventArgs e)
+        {
+            stitch = LoadStitch(@"C:\Users\Will\Desktop\test.txt");
+
+            myPanel.Invalidate();
+        }
+
+        private byte[] Combine(byte[] first, byte[] second)
+        {
+            byte[] ret = new byte[first.Length + second.Length];
+            Buffer.BlockCopy(first, 0, ret, 0, first.Length);
+            Buffer.BlockCopy(second, 0, ret, first.Length, second.Length);
+            return ret;
+        }
+
+        private Stitch LoadStitch(string filePath)
+        {
+            byte[] readBytes = new byte[40000];
+            Stitch stitchTemp;
+            int loadedstitchWidth, loadedstitchHeight, loadedstitchCellWidth;
+
+            using (FileStream fs = File.OpenRead(filePath))
+            {
+                while (fs.Read(readBytes, 0, readBytes.Length) > 0)
+                {
+                    //stitch.stitchCells[0, 0] = Color.FromArgb(255, readBytes[0], readBytes[1], readBytes[2]);
+                }
+            }
+
+            loadedstitchWidth = readBytes[0];
+            loadedstitchHeight = readBytes[1];
+            loadedstitchCellWidth = readBytes[2];
+
+            stitchTemp = new Stitch(loadedstitchWidth, loadedstitchHeight, loadedstitchCellWidth);
+
+            ResizePanel(stitchTemp.Width * stitchTemp.CellWidth, stitchTemp.Height * stitchTemp.CellWidth);
+
+            int count = 4;
+
+            for (int x = 0; x < stitch.Width; x++)
+            {
+                for (int y = 0; y < stitch.Height; y++)
+                {
+                    stitchTemp.stitchCells[x, y] = Color.FromArgb(255, readBytes[count], readBytes[count + 1], readBytes[count + 2]);
+                    count += 3;
+                }
+            }
+            return stitchTemp;
+        }
+
+        private void SaveStitch(string filepath, Stitch stitch)
         {
             ColorConverter c = new ColorConverter();
 
-            string path = @"C:\Users\Will\Desktop\test.txt";
-            byte[] test = new byte[stitch.Width * stitch.Height * 3];
+            byte[] header = new byte[4];
+            header[0] = (byte)stitch.Width;
+            header[1] = (byte)stitch.Height;
+            header[2] = (byte)stitch.CellWidth;
+
+            byte[] stitchCells = new byte[stitch.Width * stitch.Height * 3];
             int count = 0;
 
             for (int x = 0; x < stitch.Width; x++)
             {
                 for (int y = 0; y < stitch.Height; y++)
                 {
-                    test[count] = stitch.stitchCells[x, y].R;
+                    stitchCells[count] = stitch.stitchCells[x, y].R;
                     count++;
-                    test[count] = stitch.stitchCells[x, y].G;
+                    stitchCells[count] = stitch.stitchCells[x, y].G;
                     count++;
-                    test[count] = stitch.stitchCells[x, y].B;
+                    stitchCells[count] = stitch.stitchCells[x, y].B;
                     count++;
                 }
             }
 
-            using (FileStream fs = File.Create(path))
+            byte[] toWrite = Combine(header, stitchCells);
+
+            Console.WriteLine("to write: " + toWrite.Length);
+
+            using (FileStream fs = File.Create(filepath))
             {
-                for (int i = 0; i < test.Length; i++)
+                for (int i = 0; i < toWrite.Length; i++)
                 {
-                    fs.WriteByte(test[i]);
-                }
-                //fs.Seek(0, SeekOrigin.Begin);
-
-                //Console.WriteLine(fs.ReadByte());
-            }
-
-            byte[] readBytes = new byte[stitch.Width * stitch.Height * 3];
-
-            using(FileStream fs = File.OpenRead(path))
-            {
-
-                while(fs.Read(readBytes,0,readBytes.Length) > 0 )
-                {
-                    //stitch.stitchCells[0, 0] = Color.FromArgb(255, readBytes[0], readBytes[1], readBytes[2]);
-                }
-                
-            }
-
-            // testing zone
-            for (int x = 0; x < stitch.Width; x++)
-            {
-                for (int y = 0; y < stitch.Height; y++)
-                {
-                    stitch.stitchCells[x, y] = Color.FromArgb(255,255,255,255);
-                }
-            }
-
-            myPanel.Invalidate();
-
-            //System.Threading.Thread.Sleep(5000);
-            // mudda fucka
-
-            count = 0;
-            for (int x = 0; x < stitch.Width; x++)
-            {
-                for (int y = 0; y < stitch.Height; y++)
-                {
-                    stitch.stitchCells[x, y] = Color.FromArgb(255, readBytes[count], readBytes[count + 1], readBytes[count + 2]);
-                    count += 3;
+                    fs.WriteByte(toWrite[i]);
                 }
             }
         }
@@ -203,17 +218,11 @@ namespace CrossStitch
 
         private void GenerateNewStitch(int width, int height, Units units, int density)
         {
-            cellWidth = density;
+            stitch = new Stitch(width, height, density);
+
             selectedColor = Color.White;
 
-            stitchCellCountWidth = width;
-            stitchCellCountHeight = height;
-
-            Console.WriteLine(stitchCellCountWidth);
-
-            ResizePanel(stitchCellCountWidth * cellWidth, stitchCellCountHeight * cellWidth);
-
-            stitch = new Stitch(stitchCellCountWidth, stitchCellCountHeight);
+            ResizePanel(stitch.Width * stitch.CellWidth, stitch.Height * stitch.CellWidth);
         }
 
         private void ResizePanel(int width, int height)
@@ -238,8 +247,8 @@ namespace CrossStitch
         }
         private void PaintCell(Point coordinates)
         {
-            int x = coordinates.X / cellWidth;
-            int y = coordinates.Y / cellWidth;
+            int x = coordinates.X / stitch.CellWidth;
+            int y = coordinates.Y / stitch.CellWidth;
 
             if (x < stitch.stitchCells.GetLength(0) && x >= 0 && y >= 0 && y < stitch.stitchCells.GetLength(1) && copyingColourMode == false)
             {
@@ -322,11 +331,11 @@ namespace CrossStitch
             float[] dashValues = {2,2};
             grey.DashPattern = dashValues;
 
-            for (int sX = 0; sX < stitchCellCountWidth; sX++)
+            for (int sX = 0; sX < stitch.Width; sX++)
             {
-                for (int sY = 0; sY < stitchCellCountHeight; sY++)
+                for (int sY = 0; sY < stitch.Height; sY++)
                 {
-                    g.FillRectangle(new SolidBrush(stitch.stitchCells[sX, sY]), (sX * cellWidth) + 1, (sY * cellWidth) + 1, cellWidth - 1, cellWidth - 1);
+                    g.FillRectangle(new SolidBrush(stitch.stitchCells[sX, sY]), (sX * stitch.CellWidth) + 1, (sY * stitch.CellWidth) + 1, stitch.CellWidth - 1, stitch.CellWidth - 1);
                 }
             }
 
@@ -334,32 +343,32 @@ namespace CrossStitch
             if (drawGrid)
             {
                 // VERTICAL LINES //
-                for (int i = 0; i < stitchCellCountWidth; i++)
+                for (int i = 0; i < stitch.Width; i++)
                 {
                     if (i % 10 != 0)
                     {
-                        g.DrawLine(grey, i * cellWidth, 0, // main lines
-                            i * cellWidth, 800);
+                        g.DrawLine(grey, i * stitch.CellWidth, 0, // main lines
+                            i * stitch.CellWidth, 800);
                     }
                     else
                     {
-                        g.DrawLine(darkGrey, i * cellWidth, 0, // interval lines
-                            i * cellWidth, 800);
+                        g.DrawLine(darkGrey, i * stitch.CellWidth, 0, // interval lines
+                            i * stitch.CellWidth, 800);
                     }
                 }
 
                 // HORIZONTAL LINES //
-                for (int i = 0; i < stitchCellCountHeight; i++)
+                for (int i = 0; i < stitch.Height; i++)
                 {
                     if (i % 10 != 0)
                     {
-                        g.DrawLine(grey, 0, i * cellWidth, // main lines
-                            800, i * cellWidth);
+                        g.DrawLine(grey, 0, i * stitch.CellWidth, // main lines
+                            800, i * stitch.CellWidth);
                     }
                     else
                     {
-                        g.DrawLine(darkGrey, 0, i * cellWidth, // interval lines
-                            800, i * cellWidth);
+                        g.DrawLine(darkGrey, 0, i * stitch.CellWidth, // interval lines
+                            800, i * stitch.CellWidth);
                     }
                 }
             }
@@ -448,6 +457,8 @@ namespace CrossStitch
         {
             selectedColor = panelColour10.BackColor;
         }
+
+
 
 
     }
