@@ -69,20 +69,6 @@ namespace CrossStitch
                 Color.Pink, 
                 Color.Green, 
                 Color.Brown };
-
-            //stitch.PointList.Add(new PointPair(0, 0, 200, 200));
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            SaveStitch(@"C:\Users\Will\Desktop\test.txt", stitch);
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            stitch = LoadStitch(@"C:\Users\Will\Desktop\test.txt");
-
-            myPanel.Invalidate();
         }
 
         private byte[] Combine(byte[] first, byte[] second)
@@ -103,7 +89,6 @@ namespace CrossStitch
             {
                 while (fs.Read(readBytes, 0, readBytes.Length) > 0)
                 {
-                    //stitch.stitchCells[0, 0] = Color.FromArgb(255, readBytes[0], readBytes[1], readBytes[2]);
                 }
             }
 
@@ -155,8 +140,6 @@ namespace CrossStitch
 
             byte[] toWrite = Combine(header, stitchCells);
 
-            Console.WriteLine("to write: " + toWrite.Length);
-
             using (FileStream fs = File.Create(filepath))
             {
                 for (int i = 0; i < toWrite.Length; i++)
@@ -166,25 +149,50 @@ namespace CrossStitch
             }
         }
 
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveFileDialog1.ShowDialog();
+            OpenStitch();
+            myPanel.Invalidate();
         }
 
-        private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string fileName = saveFileDialog1.FileName;
-            stitch.FileName = fileName;
-
-            SaveFile(fileName);
+            SaveFile();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveFile(stitch.FileName);
+            SaveFile();
         }
 
-        private void SaveFile(string FileName)
+        private void OpenStitch()
+        {
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                stitch = LoadStitch(openFileDialog.FileName);
+            }
+        }
+
+        private void SaveFile()
+        {
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                SaveStitch(saveFileDialog.FileName, stitch);
+            }
+        }
+
+        private void exportAsPNGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialogExport.ShowDialog() == DialogResult.OK)
+            {
+                string fileName = saveFileDialogExport.FileName;
+                stitch.FileName = fileName;
+
+                ExportImage(fileName);
+            }
+        }
+
+        private void ExportImage(string FileName)
         {
             try
             {
@@ -197,10 +205,9 @@ namespace CrossStitch
 
                 bmp.Save(FileName, ImageFormat.Png);
             }
-            catch(ArgumentNullException)
+            catch(Exception e)
             {
-                saveFileDialog1.ShowDialog();
-                //MessageBox.Show("Invalid file path to save to.");
+                MessageBox.Show("Could not export file.");
             }
         }
 
@@ -235,8 +242,6 @@ namespace CrossStitch
 
         private void AddColourToPanel(Color colorToAdd)
         {
-            //QuickColourList.Last() = colorToAdd;
-
             QuickColourList.Insert(0, colorToAdd);
             QuickColourList.RemoveAt(10);
             
@@ -245,6 +250,7 @@ namespace CrossStitch
                 ColourPanels[i].BackColor = QuickColourList[i];
             }
         }
+
         private void PaintCell(Point coordinates)
         {
             int x = coordinates.X / stitch.CellWidth;
@@ -457,9 +463,5 @@ namespace CrossStitch
         {
             selectedColor = panelColour10.BackColor;
         }
-
-
-
-
     }
 }
