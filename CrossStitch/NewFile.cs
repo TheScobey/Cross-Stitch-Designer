@@ -37,6 +37,14 @@ namespace CrossStitch
                 {
                     width = Convert.ToInt16(numericWidth.Value);
                     height = Convert.ToInt16(numericHeight.Value);
+                    if ((string)comboBoxUnits.SelectedItem == "Pixels")
+                    {
+                        units = Units.Pixels;
+                    }
+                    else
+                    {
+                        units = Units.Cells;
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -40,8 +40,6 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportAsPNGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkBoxDrawGrid = new System.Windows.Forms.CheckBox();
             this.saveFileDialogExport = new System.Windows.Forms.SaveFileDialog();
             this.panelColour6 = new System.Windows.Forms.Panel();
@@ -52,8 +50,8 @@
             this.panelColour9 = new System.Windows.Forms.Panel();
             this.buttonCopyColour = new System.Windows.Forms.Button();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.myPanel = new CrossStitch.myPanel();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.myPanel = new CrossStitch.myPanel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +69,7 @@
             // 
             this.panelColour1.BackColor = System.Drawing.Color.White;
             this.panelColour1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour1.Location = new System.Drawing.Point(826, 80);
+            this.panelColour1.Location = new System.Drawing.Point(825, 133);
             this.panelColour1.Name = "panelColour1";
             this.panelColour1.Size = new System.Drawing.Size(25, 25);
             this.panelColour1.TabIndex = 5;
@@ -81,7 +79,7 @@
             // 
             this.panelColour2.BackColor = System.Drawing.Color.Black;
             this.panelColour2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour2.Location = new System.Drawing.Point(858, 80);
+            this.panelColour2.Location = new System.Drawing.Point(857, 133);
             this.panelColour2.Name = "panelColour2";
             this.panelColour2.Size = new System.Drawing.Size(25, 25);
             this.panelColour2.TabIndex = 6;
@@ -91,7 +89,7 @@
             // 
             this.panelColour4.BackColor = System.Drawing.Color.Aqua;
             this.panelColour4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour4.Location = new System.Drawing.Point(858, 111);
+            this.panelColour4.Location = new System.Drawing.Point(857, 164);
             this.panelColour4.Name = "panelColour4";
             this.panelColour4.Size = new System.Drawing.Size(25, 25);
             this.panelColour4.TabIndex = 8;
@@ -101,7 +99,7 @@
             // 
             this.panelColour3.BackColor = System.Drawing.Color.Red;
             this.panelColour3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour3.Location = new System.Drawing.Point(826, 111);
+            this.panelColour3.Location = new System.Drawing.Point(825, 164);
             this.panelColour3.Name = "panelColour3";
             this.panelColour3.Size = new System.Drawing.Size(25, 25);
             this.panelColour3.TabIndex = 7;
@@ -110,8 +108,7 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.editToolStripMenuItem});
+            this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(898, 24);
@@ -165,26 +162,12 @@
             this.exportAsPNGToolStripMenuItem.Text = "Export as PNG";
             this.exportAsPNGToolStripMenuItem.Click += new System.EventHandler(this.exportAsPNGToolStripMenuItem_Click);
             // 
-            // editToolStripMenuItem
-            // 
-            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.propertiesToolStripMenuItem});
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-            this.editToolStripMenuItem.Text = "Edit";
-            // 
-            // propertiesToolStripMenuItem
-            // 
-            this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
-            this.propertiesToolStripMenuItem.Text = "Properties";
-            // 
             // checkBoxDrawGrid
             // 
             this.checkBoxDrawGrid.AutoSize = true;
             this.checkBoxDrawGrid.Checked = true;
             this.checkBoxDrawGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxDrawGrid.Location = new System.Drawing.Point(92, 5);
+            this.checkBoxDrawGrid.Location = new System.Drawing.Point(50, 5);
             this.checkBoxDrawGrid.Name = "checkBoxDrawGrid";
             this.checkBoxDrawGrid.Size = new System.Drawing.Size(71, 17);
             this.checkBoxDrawGrid.TabIndex = 11;
@@ -201,7 +184,7 @@
             // 
             this.panelColour6.BackColor = System.Drawing.Color.Maroon;
             this.panelColour6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour6.Location = new System.Drawing.Point(858, 142);
+            this.panelColour6.Location = new System.Drawing.Point(857, 195);
             this.panelColour6.Name = "panelColour6";
             this.panelColour6.Size = new System.Drawing.Size(25, 25);
             this.panelColour6.TabIndex = 10;
@@ -211,7 +194,7 @@
             // 
             this.panelColour5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.panelColour5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour5.Location = new System.Drawing.Point(826, 142);
+            this.panelColour5.Location = new System.Drawing.Point(825, 195);
             this.panelColour5.Name = "panelColour5";
             this.panelColour5.Size = new System.Drawing.Size(25, 25);
             this.panelColour5.TabIndex = 9;
@@ -221,7 +204,7 @@
             // 
             this.panelColour8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.panelColour8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour8.Location = new System.Drawing.Point(858, 173);
+            this.panelColour8.Location = new System.Drawing.Point(857, 226);
             this.panelColour8.Name = "panelColour8";
             this.panelColour8.Size = new System.Drawing.Size(25, 25);
             this.panelColour8.TabIndex = 10;
@@ -231,7 +214,7 @@
             // 
             this.panelColour7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.panelColour7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour7.Location = new System.Drawing.Point(826, 173);
+            this.panelColour7.Location = new System.Drawing.Point(825, 226);
             this.panelColour7.Name = "panelColour7";
             this.panelColour7.Size = new System.Drawing.Size(25, 25);
             this.panelColour7.TabIndex = 9;
@@ -241,7 +224,7 @@
             // 
             this.panelColour10.BackColor = System.Drawing.Color.Aqua;
             this.panelColour10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour10.Location = new System.Drawing.Point(858, 204);
+            this.panelColour10.Location = new System.Drawing.Point(857, 257);
             this.panelColour10.Name = "panelColour10";
             this.panelColour10.Size = new System.Drawing.Size(25, 25);
             this.panelColour10.TabIndex = 10;
@@ -251,7 +234,7 @@
             // 
             this.panelColour9.BackColor = System.Drawing.Color.Yellow;
             this.panelColour9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColour9.Location = new System.Drawing.Point(826, 204);
+            this.panelColour9.Location = new System.Drawing.Point(825, 257);
             this.panelColour9.Name = "panelColour9";
             this.panelColour9.Size = new System.Drawing.Size(25, 25);
             this.panelColour9.TabIndex = 9;
@@ -259,7 +242,7 @@
             // 
             // buttonCopyColour
             // 
-            this.buttonCopyColour.Location = new System.Drawing.Point(823, 235);
+            this.buttonCopyColour.Location = new System.Drawing.Point(823, 80);
             this.buttonCopyColour.Name = "buttonCopyColour";
             this.buttonCopyColour.Size = new System.Drawing.Size(63, 47);
             this.buttonCopyColour.TabIndex = 12;
@@ -271,6 +254,10 @@
             // 
             this.saveFileDialog.DefaultExt = "txt";
             this.saveFileDialog.Filter = "TXT (.txt)|*.txt";
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.FileName = "openFileDialog1";
             // 
             // myPanel
             // 
@@ -284,10 +271,6 @@
             this.myPanel.MouseLeave += new System.EventHandler(this.myPanel_MouseLeave);
             this.myPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.myPanel_MouseMove);
             this.myPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.myPanel_MouseUp);
-            // 
-            // openFileDialog
-            // 
-            this.openFileDialog.FileName = "openFileDialog1";
             // 
             // Form1
             // 
@@ -333,8 +316,6 @@
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.CheckBox checkBoxDrawGrid;
         private System.Windows.Forms.SaveFileDialog saveFileDialogExport;
         private System.Windows.Forms.Panel panelColour6;

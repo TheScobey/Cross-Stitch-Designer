@@ -100,6 +100,9 @@ namespace CrossStitch
 
             ResizePanel(stitchTemp.Width * stitchTemp.CellWidth, stitchTemp.Height * stitchTemp.CellWidth);
 
+            stitch.Width = loadedstitchWidth;
+            stitch.Height = loadedstitchHeight;
+
             int count = 4;
 
             for (int x = 0; x < stitch.Width; x++)
@@ -225,6 +228,14 @@ namespace CrossStitch
 
         private void GenerateNewStitch(int width, int height, Units units, int density)
         {
+            Console.WriteLine(units);
+            if (units == Units.Pixels)
+            {
+                width = width / density;
+                height = height / density;
+            }
+
+            Console.WriteLine(width + "," + height);
             stitch = new Stitch(width, height, density);
 
             selectedColor = Color.White;
@@ -286,7 +297,7 @@ namespace CrossStitch
 
             if(copyingColourMode)
             {
-                selectedColor = stitch.stitchCells[me.X / 10, me.Y / 10];
+                selectedColor = stitch.stitchCells[me.X / stitch.CellWidth, me.Y / stitch.CellWidth];
                 AddColourToPanel(selectedColor);
                 copyingColourMode = false;
                 this.Cursor = Cursors.Default;
